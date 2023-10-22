@@ -4,27 +4,39 @@ import VideogameItem from './VideogameItem';
 
 const Videogames = () => {
   const [addedVideogames, setAddedVideogames] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchVideogamesHandler = useCallback(async () => {
-    const response = await fetch(
-      'https://react-http-f4cc2-default-rtdb.europe-west1.firebasedatabase.app/videogames.json',
-    );
-    const data = await response.json();
-    const loadedVideogames = [];
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        'https://react-http-f4cc2-default-rtdb.europe-west1.firebasedatabase.app/videogames.json',
+      );
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+      const data = await response.json();
+      const loadedVideogames = [];
 
-    for (const key in data) {
-      loadedVideogames.push({
-        id: key,
-        name: data[key].name,
-        status: data[key].status,
-      });
+      for (const key in data) {
+        loadedVideogames.push({
+          id: key,
+          name: data[key].name,
+          status: data[key].status,
+        });
+      }
+      setAddedVideogames(loadedVideogames);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error);
+      setIsLoading(false);
     }
-    setAddedVideogames(loadedVideogames);
   }, []);
 
   useEffect(() => {
     fetchVideogamesHandler();
-  }, [fetchVideogamesHandler, addVideogameHandler]);
+  }, [fetchVideogamesHandler]);
 
   async function addVideogameHandler(videogame) {
     const response = await fetch(
@@ -38,6 +50,7 @@ const Videogames = () => {
       },
     );
     const data = await response.json();
+    fetchVideogamesHandler();
   }
 
   const videogamesList = addedVideogames.map((item) => (
@@ -50,7 +63,11 @@ const Videogames = () => {
         <NewVideogame onAddedVideogames={addVideogameHandler} />
       </div>
       <section>
-        <ul>{videogamesList}</ul>
+        {error && <p>{error}</p>}
+        {!error && !isLoading && videogamesList.length > 0 && (
+          <ul>{videogamesList}</ul>
+        )}
+        {isLoading && <p>Loading...</p>}
       </section>
     </div>
   );
