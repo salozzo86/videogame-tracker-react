@@ -34,7 +34,7 @@ const NewVideogameForm = (props) => {
     const inputData = {
       name: enteredName,
       status: enteredStatus,
-      id: Math.floor(Math.random() * 10000),
+      //id: Math.floor(Math.random() * 10000),
     };
     props.onFormSubmit(inputData);
     nameRef.current.value = '';
