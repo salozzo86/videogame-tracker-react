@@ -41,14 +41,14 @@ const Videogames = () => {
   ));
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center">
       <div className="py-10">
         <NewVideogame onAddedVideogames={addVideogameHandler} />
       </div>
       <section>
         {error && <p>{error}</p>}
         {!error && !isLoading && videogamesList.length > 0 && (
-          <ul>{videogamesList}</ul>
+          <ul className="flex flex-row flex-wrap">{videogamesList}</ul>
         )}
         {isLoading && <p>Loading...</p>}
       </section>
