@@ -1,57 +1,40 @@
 import { useCallback, useEffect, useState } from 'react';
 import NewVideogame from './NewVideogame';
 import VideogameItem from './VideogameItem';
+import { db } from '../services/services';
+import { onValue, ref, set, push, child } from 'firebase/database';
 
 const Videogames = () => {
   const [addedVideogames, setAddedVideogames] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchVideogamesHandler = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        'https://react-http-f4cc2-default-rtdb.europe-west1.firebasedatabase.app/videogames.json',
-      );
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-      const data = await response.json();
+  const fetchVideogames = (query) => {
+    setIsLoading(true);
+    onValue(query, (snapshot) => {
+      const data = snapshot.val();
       const loadedVideogames = [];
-
       for (const key in data) {
         loadedVideogames.push({
           id: key,
-          name: data[key].name,
-          status: data[key].status,
+          name: data[key]['name'],
+          status: data[key]['status'],
         });
       }
       setAddedVideogames(loadedVideogames);
       setIsLoading(false);
-    } catch (error) {
-      setError(error);
-      setIsLoading(false);
-    }
-  }, []);
+    });
+  };
+
+  const addVideogameHandler = (videogameData) => {
+    const newVideogameKey = push(child(ref(db), 'videogames')).key;
+    set(ref(db, 'videogames/' + newVideogameKey), videogameData);
+  };
 
   useEffect(() => {
-    fetchVideogamesHandler();
-  }, [fetchVideogamesHandler]);
-
-  async function addVideogameHandler(videogame) {
-    const response = await fetch(
-      'https://react-http-f4cc2-default-rtdb.europe-west1.firebasedatabase.app/videogames.json',
-      {
-        method: 'POST',
-        body: JSON.stringify(videogame),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-    const data = await response.json();
-    fetchVideogamesHandler();
-  }
+    const query = ref(db, 'videogames');
+    fetchVideogames(query);
+  }, []);
 
   const videogamesList = addedVideogames.map((item) => (
     <VideogameItem key={item.id} name={item.name} status={item.status} />
