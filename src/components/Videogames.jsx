@@ -72,8 +72,6 @@ const Videogames = () => {
         {!error && !isLoading && videogamesList.length > 0 && (
           <ul className="flex flex-row flex-wrap">{videogamesList}</ul>
         )}
-        {isLoading && <p>Loading...</p>}
-        <Button onClick={fetchVideogames}>Fetch</Button>
       </section>
     </div>
   );
