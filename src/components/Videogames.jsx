@@ -1,44 +1,66 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import NewVideogame from './NewVideogame';
 import VideogameItem from './VideogameItem';
-import { db } from '../services/services';
-import { onValue, ref, set, push, child } from 'firebase/database';
+import { auth, db } from '../services/services';
+import {
+  collection,
+  getDocs,
+  addDoc,
+  where,
+  query,
+  onSnapshot,
+} from 'firebase/firestore';
+import Button from './UI/Button';
 
 const Videogames = () => {
   const [addedVideogames, setAddedVideogames] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const videogamesCollectionRef = collection(db, 'videogames');
 
-  const fetchVideogames = (query) => {
+  //TODO implement useCallback
+  const fetchVideogames = async () => {
     setIsLoading(true);
-    onValue(query, (snapshot) => {
-      const data = snapshot.val();
-      const loadedVideogames = [];
-      for (const key in data) {
-        loadedVideogames.push({
-          id: key,
-          name: data[key]['name'],
-          status: data[key]['status'],
-        });
-      }
-      setAddedVideogames(loadedVideogames);
-      setIsLoading(false);
-    });
+
+    try {
+      const q = query(
+        collection(db, 'videogames'),
+        where('userId', '==', auth.currentUser.uid),
+      );
+      onSnapshot(q, (snapshot) => {
+        setAddedVideogames(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })),
+        );
+        setIsLoading(false);
+      });
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+    }
   };
 
-  const addVideogameHandler = (videogameData) => {
-    const newVideogameKey = push(child(ref(db), 'videogames')).key;
-    set(ref(db, 'videogames/' + newVideogameKey), videogameData);
+  const addVideogameHandler = async (videogameData) => {
+    try {
+      await addDoc(videogamesCollectionRef, videogameData);
+      fetchVideogames();
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   useEffect(() => {
-    const query = ref(db, 'videogames');
-    fetchVideogames(query);
+    fetchVideogames();
   }, []);
 
-  const videogamesList = addedVideogames.map((item) => (
-    <VideogameItem key={item.id} name={item.name} status={item.status} />
-  ));
+  // TODO implement useMemo
+  const videogamesList = addedVideogames.map((item) => {
+    return (
+      <VideogameItem key={item.id} name={item.name} status={item.status} />
+    );
+  });
 
   return (
     <div className="flex flex-col items-center">
@@ -51,6 +73,7 @@ const Videogames = () => {
           <ul className="flex flex-row flex-wrap">{videogamesList}</ul>
         )}
         {isLoading && <p>Loading...</p>}
+        <Button onClick={fetchVideogames}>Fetch</Button>
       </section>
     </div>
   );

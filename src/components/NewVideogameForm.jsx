@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import Button from './UI/Button';
+import { auth } from '../services/services';
 
 const NewVideogameForm = (props) => {
   const nameRef = useRef();
@@ -19,6 +20,7 @@ const NewVideogameForm = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
+    const userId = auth?.currentUser?.uid;
     const enteredName = nameRef.current.value;
     const enteredStatus = statusPlayedRef.current.checked
       ? 'Played'
@@ -34,6 +36,7 @@ const NewVideogameForm = (props) => {
     const inputData = {
       name: enteredName,
       status: enteredStatus,
+      userId: userId,
     };
     props.onFormSubmit(inputData);
     nameRef.current.value = '';
