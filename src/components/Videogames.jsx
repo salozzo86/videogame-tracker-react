@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import NewVideogame from './NewVideogame';
 import VideogameItem from './VideogameItem';
 import { auth, db } from '../services/services';
@@ -18,8 +18,7 @@ const Videogames = () => {
   const [isLoading, setIsLoading] = useState(false);
   const videogamesCollectionRef = collection(db, 'videogames');
 
-  //TODO implement useCallback
-  const fetchVideogames = async () => {
+  const fetchVideogames = useCallback(async () => {
     setIsLoading(true);
 
     try {
@@ -40,7 +39,7 @@ const Videogames = () => {
       console.log(error);
       setError(error.message);
     }
-  };
+  }, [setAddedVideogames]);
 
   const addVideogameHandler = async (videogameData) => {
     try {
