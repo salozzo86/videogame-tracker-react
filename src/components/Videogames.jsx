@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import NewVideogame from './NewVideogame';
 import VideogameItem from './VideogameItem';
 import { auth, db } from '../services/services';
@@ -54,12 +54,14 @@ const Videogames = () => {
     fetchVideogames();
   }, []);
 
-  // TODO implement useMemo
-  const videogamesList = addedVideogames.map((item) => {
-    return (
+  const videogamesList = useMemo(() => {
+    if (!addedVideogames) {
+      return null;
+    }
+    return addedVideogames.map((item) => (
       <VideogameItem key={item.id} name={item.name} status={item.status} />
-    );
-  });
+    ));
+  }, [addedVideogames]);
 
   return (
     <div className="flex flex-col items-center">
