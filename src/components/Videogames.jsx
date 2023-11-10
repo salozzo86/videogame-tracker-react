@@ -4,13 +4,11 @@ import VideogameItem from './VideogameItem';
 import { auth, db } from '../services/services';
 import {
   collection,
-  getDocs,
   addDoc,
   where,
   query,
   onSnapshot,
 } from 'firebase/firestore';
-import Button from './UI/Button';
 
 const Videogames = () => {
   const [addedVideogames, setAddedVideogames] = useState([]);
