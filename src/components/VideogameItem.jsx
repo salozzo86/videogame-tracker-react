@@ -38,7 +38,7 @@ const VideogameItem = (props) => {
       <img src={props.img} className="h-40 w-auto rounded-t-lg" />
       <div className="flex-1 p-4">
         <h4 className="text-xl">{props.name}</h4>
-        <p className="absolute right-2 top-1 text-sm">{props.status}</p>
+        <p className="absolute bottom-1 right-2 text-sm">{props.status}</p>
         <div className="flex flex-row justify-center">
           {props.platforms.map((platform) => {
             return (
