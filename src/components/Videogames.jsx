@@ -49,17 +49,17 @@ const Videogames = () => {
         throw new Error('Something wrong happened');
       }
       const data = await response.json();
-      console.log(data['parent_platforms']);
       const videogame_image = data['background_image'];
+      const realName = data['name'];
       const platformsList = data['parent_platforms'].map(
         (item) => item.platform.name,
       );
       const newVideogameData = {
         ...videogameData,
+        name: realName,
         img: videogame_image,
         platforms: platformsList,
       };
-      console.log(newVideogameData);
       await addDoc(videogamesCollectionRef, newVideogameData);
       fetchVideogames();
     } catch (error) {
