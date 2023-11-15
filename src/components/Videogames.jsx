@@ -94,7 +94,9 @@ const Videogames = () => {
       <section>
         {error && <p>{error}</p>}
         {!error && !isLoading && videogamesList.length > 0 && (
-          <ul className="flex flex-row flex-wrap pb-2">{videogamesList}</ul>
+          <ul className="flex flex-row flex-wrap justify-center pb-2">
+            {videogamesList}
+          </ul>
         )}
       </section>
     </div>
