@@ -41,7 +41,26 @@ const Videogames = () => {
 
   const addVideogameHandler = async (videogameData) => {
     try {
-      await addDoc(videogamesCollectionRef, videogameData);
+      const cleanedName = videogameData.name.toLowerCase().replace(/\s+/g, '-');
+      const response = await fetch(
+        `https://api.rawg.io/api/games/${cleanedName}?key=b2481ca1cf76410687af59c09367d769`,
+      );
+      if (!response.ok) {
+        throw new Error('Something wrong happened');
+      }
+      const data = await response.json();
+      console.log(data['parent_platforms']);
+      const videogame_image = data['background_image'];
+      const platformsList = data['parent_platforms'].map(
+        (item) => item.platform.name,
+      );
+      const newVideogameData = {
+        ...videogameData,
+        img: videogame_image,
+        platforms: platformsList,
+      };
+      console.log(newVideogameData);
+      await addDoc(videogamesCollectionRef, newVideogameData);
       fetchVideogames();
     } catch (error) {
       setError(error.message);

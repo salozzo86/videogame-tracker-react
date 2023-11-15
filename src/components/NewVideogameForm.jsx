@@ -21,7 +21,7 @@ const NewVideogameForm = (props) => {
   const submitHandler = (event) => {
     event.preventDefault();
     const userId = auth?.currentUser?.uid;
-    const enteredName = nameRef.current.value;
+    const enteredName = nameRef.current.value.trim();
     const enteredStatus = statusPlayedRef.current.checked
       ? 'Played'
       : statusPlayingRef.current.checked
