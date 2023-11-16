@@ -38,24 +38,26 @@ const VideogameItem = (props) => {
       <img src={props.img} className="h-40 w-auto rounded-t-lg" />
       <div className="flex-1 p-4">
         <h4 className="text-xl">{props.name}</h4>
-        <p className="absolute bottom-1 right-2 text-sm">{props.status}</p>
-        <div className="flex flex-row justify-center">
-          {props.platforms.map((platform) => {
-            return (
-              <img
-                key={platform}
-                src={platforms_available[platform]}
-                className="px-1"
-                title={platform}
-                alt={`Main logo for ${platforms_available[platform]
-                  .split('/')
-                  .pop()
-                  .split('.')
-                  .slice(0, -1)
-                  .join('.')}`}
-              />
-            );
-          })}
+        <div className="mt-2 flex justify-between">
+          <p className="text-sm">{props.status}</p>
+          <div className="flex flex-row justify-center">
+            {props.platforms.map((platform) => {
+              return (
+                <img
+                  key={platform}
+                  src={platforms_available[platform]}
+                  className="px-1"
+                  title={platform}
+                  alt={`Main logo for ${platforms_available[platform]
+                    .split('/')
+                    .pop()
+                    .split('.')
+                    .slice(0, -1)
+                    .join('.')}`}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </Card>

@@ -15,6 +15,7 @@ const Videogames = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const videogamesCollectionRef = collection(db, 'videogames');
+  const API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
   const fetchVideogames = useCallback(async () => {
     setIsLoading(true);
@@ -43,7 +44,7 @@ const Videogames = () => {
     try {
       const cleanedName = videogameData.name.toLowerCase().replace(/\s+/g, '-');
       const response = await fetch(
-        `https://api.rawg.io/api/games/${cleanedName}?key=b2481ca1cf76410687af59c09367d769`,
+        `https://api.rawg.io/api/games/${cleanedName}?key=${API_KEY}`,
       );
       if (!response.ok) {
         throw new Error('Something wrong happened');
@@ -75,16 +76,7 @@ const Videogames = () => {
     if (!addedVideogames) {
       return null;
     }
-    return addedVideogames.map((item) => (
-      <VideogameItem
-        key={item.id}
-        name={item.name}
-        status={item.status}
-        img={item.img}
-        platforms={item.platforms}
-      />
-    ));
-  });
+  }, [addedVideogames]);
 
   return (
     <div className="flex flex-col items-center">
@@ -93,9 +85,17 @@ const Videogames = () => {
       </div>
       <section>
         {error && <p>{error}</p>}
-        {!error && !isLoading && videogamesList.length > 0 && (
+        {!error && !isLoading && (
           <ul className="flex flex-row flex-wrap justify-center pb-2">
-            {videogamesList}
+            {addedVideogames.map((item) => (
+              <VideogameItem
+                key={item.id}
+                name={item.name}
+                status={item.status}
+                img={item.img}
+                platforms={item.platforms}
+              />
+            ))}
           </ul>
         )}
       </section>
