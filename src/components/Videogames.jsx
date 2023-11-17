@@ -1,47 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useFetch } from './hooks/useFetch';
 import NewVideogame from './NewVideogame';
 import VideogameItem from './VideogameItem';
-import { auth, db } from '../services/services';
-import {
-  collection,
-  addDoc,
-  where,
-  query,
-  onSnapshot,
-  orderBy,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { db } from '../services/services';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const Videogames = () => {
-  const [addedVideogames, setAddedVideogames] = useState([]);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { error, isLoading, fetchedData, fetchData } = useFetch(
+    'videogames',
+    'createdAt',
+  );
   const videogamesCollectionRef = collection(db, 'videogames');
   const API_KEY = import.meta.env.VITE_RAWG_API_KEY;
-
-  const fetchVideogames = useCallback(async () => {
-    setIsLoading(true);
-
-    try {
-      const q = query(
-        collection(db, 'videogames'),
-        where('userId', '==', auth.currentUser.uid),
-        orderBy('createdAt', 'desc'),
-      );
-      onSnapshot(q, (snapshot) => {
-        setAddedVideogames(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })),
-        );
-        setIsLoading(false);
-      });
-    } catch (error) {
-      console.log(error);
-      setError(error.message);
-    }
-  }, [setAddedVideogames]);
 
   const addVideogameHandler = async (videogameData) => {
     try {
@@ -72,14 +42,14 @@ const Videogames = () => {
   };
 
   useEffect(() => {
-    fetchVideogames();
+    fetchData();
   }, []);
 
   const videogamesList = useMemo(() => {
-    if (!addedVideogames) {
+    if (!fetchedData) {
       return null;
     }
-    return addedVideogames.map((item) => (
+    return fetchedData.map((item) => (
       <VideogameItem
         key={item.id}
         name={item.name}
@@ -88,7 +58,7 @@ const Videogames = () => {
         platforms={item.platforms}
       />
     ));
-  }, [addedVideogames]);
+  }, [fetchedData]);
 
   return (
     <div className="flex flex-col items-center">
