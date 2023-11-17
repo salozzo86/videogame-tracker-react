@@ -6,10 +6,12 @@ import { db } from '../services/services';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const Videogames = () => {
-  const { error, isLoading, fetchedData, fetchData } = useFetch(
-    'videogames',
-    'createdAt',
-  );
+  const {
+    error,
+    isLoading,
+    fetchedData: addedVideogames,
+    fetchData: fetchVideogames,
+  } = useFetch('videogames', 'createdAt');
   const videogamesCollectionRef = collection(db, 'videogames');
   const API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
@@ -42,14 +44,14 @@ const Videogames = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchVideogames();
   }, []);
 
   const videogamesList = useMemo(() => {
-    if (!fetchedData) {
+    if (!addedVideogames) {
       return null;
     }
-    return fetchedData.map((item) => (
+    return addedVideogames.map((item) => (
       <VideogameItem
         key={item.id}
         name={item.name}
@@ -58,7 +60,7 @@ const Videogames = () => {
         platforms={item.platforms}
       />
     ));
-  }, [fetchedData]);
+  }, [addedVideogames]);
 
   return (
     <div className="flex flex-col items-center">
