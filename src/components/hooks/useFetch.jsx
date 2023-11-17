@@ -34,7 +34,7 @@ export function useFetch(collectionName, orderCriteria) {
       console.log(error);
       setError(error.message);
     }
-  }, [setFetchedData]);
+  }, [fetchedData]);
 
   return {
     error,
