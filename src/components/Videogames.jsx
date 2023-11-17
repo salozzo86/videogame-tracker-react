@@ -8,6 +8,8 @@ import {
   where,
   query,
   onSnapshot,
+  orderBy,
+  serverTimestamp,
 } from 'firebase/firestore';
 
 const Videogames = () => {
@@ -24,6 +26,7 @@ const Videogames = () => {
       const q = query(
         collection(db, 'videogames'),
         where('userId', '==', auth.currentUser.uid),
+        orderBy('createdAt', 'desc'),
       );
       onSnapshot(q, (snapshot) => {
         setAddedVideogames(
@@ -60,9 +63,9 @@ const Videogames = () => {
         name: realName,
         img: videogame_image,
         platforms: platformsList,
+        createdAt: serverTimestamp(),
       };
       await addDoc(videogamesCollectionRef, newVideogameData);
-      fetchVideogames();
     } catch (error) {
       setError(error.message);
     }
@@ -76,6 +79,15 @@ const Videogames = () => {
     if (!addedVideogames) {
       return null;
     }
+    return addedVideogames.map((item) => (
+      <VideogameItem
+        key={item.id}
+        name={item.name}
+        status={item.status}
+        img={item.img}
+        platforms={item.platforms}
+      />
+    ));
   }, [addedVideogames]);
 
   return (
@@ -87,15 +99,7 @@ const Videogames = () => {
         {error && <p>{error}</p>}
         {!error && !isLoading && (
           <ul className="flex flex-row flex-wrap justify-center pb-2">
-            {addedVideogames.map((item) => (
-              <VideogameItem
-                key={item.id}
-                name={item.name}
-                status={item.status}
-                img={item.img}
-                platforms={item.platforms}
-              />
-            ))}
+            {videogamesList}
           </ul>
         )}
       </section>
