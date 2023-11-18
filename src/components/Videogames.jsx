@@ -8,6 +8,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 const Videogames = () => {
   const {
     error,
+    setError,
     isLoading,
     fetchedData: addedVideogames,
     fetchData: fetchVideogames,
@@ -26,6 +27,13 @@ const Videogames = () => {
       const data = await response.json();
       const videogame_image = data['background_image'];
       const realName = data['name'];
+      const duplicate = addedVideogames.some(
+        (videogame) => videogame.name === realName,
+      );
+      if (duplicate) {
+        setError(`${realName} is already in your collection.`);
+        return;
+      }
       const platformsList = data['parent_platforms'].map(
         (item) => item.platform.name,
       );

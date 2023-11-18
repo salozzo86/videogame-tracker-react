@@ -31,7 +31,7 @@ const NewVideogameForm = (props) => {
       : statusWantRef.current.checked
       ? 'Want to Play'
       : '';
-    if (enteredName === '' || enteredStatus === '') {
+    if (cleanedName === '' || enteredStatus === '') {
       setIsValid(false);
       return;
     }

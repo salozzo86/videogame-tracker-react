@@ -38,6 +38,7 @@ export function useFetch(collectionName, orderCriteria) {
 
   return {
     error,
+    setError,
     isLoading,
     fetchedData,
     fetchData,
