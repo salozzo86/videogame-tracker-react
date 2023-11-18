@@ -17,9 +17,8 @@ const Videogames = () => {
 
   const addVideogameHandler = async (videogameData) => {
     try {
-      const cleanedName = videogameData.name.toLowerCase().replace(/\s+/g, '-');
       const response = await fetch(
-        `https://api.rawg.io/api/games/${cleanedName}?key=${API_KEY}`,
+        `https://api.rawg.io/api/games/${videogameData.name}?key=${API_KEY}`,
       );
       if (!response.ok) {
         throw new Error('Something wrong happened');

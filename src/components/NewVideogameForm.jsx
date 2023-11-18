@@ -23,6 +23,7 @@ const NewVideogameForm = (props) => {
     event.preventDefault();
     const userId = auth?.currentUser?.uid;
     const enteredName = nameRef.current.value.trim();
+    const cleanedName = enteredName.toLowerCase().replace(/\s+/g, '-');
     const enteredStatus = statusPlayedRef.current.checked
       ? 'Played'
       : statusPlayingRef.current.checked
@@ -35,7 +36,7 @@ const NewVideogameForm = (props) => {
       return;
     }
     const inputData = {
-      name: enteredName,
+      name: cleanedName,
       status: enteredStatus,
       userId: userId,
     };
