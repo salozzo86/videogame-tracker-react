@@ -4,6 +4,7 @@ import NewVideogame from './NewVideogame';
 import VideogameItem from './VideogameItem';
 import { db } from '../services/services';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import Card from './UI/Card';
 
 const Videogames = () => {
   const {
@@ -71,12 +72,12 @@ const Videogames = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="py-10">
+      <section className="py-10">
         <NewVideogame onAddedVideogames={addVideogameHandler} />
-      </div>
+      </section>
+      <section>{error && <Card>{error}</Card>}</section>
       <section>
-        {error && <p>{error}</p>}
-        {!error && !isLoading && (
+        {!isLoading && (
           <ul className="flex flex-row flex-wrap justify-center pb-2">
             {videogamesList}
           </ul>
