@@ -10,6 +10,7 @@ import Button from './components/UI/Button';
 
 function App() {
   const [authUser, setAuthUser] = useState(null);
+  const [authStateLoaded, setAuthStateLoaded] = useState(false);
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
@@ -18,25 +19,50 @@ function App() {
       } else {
         setAuthUser(null);
       }
+      setAuthStateLoaded(true);
     });
 
     return () => {
       listen();
     };
-  }, []);
+  }, [setAuthUser, setAuthStateLoaded]);
 
   const userSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.log('user signed out successfully');
         setAuthUser(null);
       })
       .catch((error) => console.log(error));
   };
+
+  if (!authStateLoaded) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-16 w-16 animate-spin rounded-full border-t-4 border-solid border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col">
       <Header />
-      {!authUser && (
+      <section>
+        {authUser ? (
+          <>
+            <section>
+              <p>{authUser.email}</p>
+              <Button onClick={userSignOut}>Sign Out</Button>
+            </section>
+
+            <Videogames />
+          </>
+        ) : (
+          <>
+            <SignIn /> <SignUp />
+          </>
+        )}
+      </section>
+      {/* {!authUser && authStateLoaded && (
         <>
           <SignIn /> <SignUp />
         </>
@@ -50,7 +76,7 @@ function App() {
 
           <Videogames />
         </>
-      )}
+      )} */}
     </div>
   );
 }
