@@ -20,7 +20,7 @@ const SignIn = () => {
       });
   };
   return (
-    <>
+    <section>
       <h2>Sign In</h2>
       <form>
         <label htmlFor="email">Email: </label>
@@ -41,7 +41,7 @@ const SignIn = () => {
           Sign In
         </Button>
       </form>
-    </>
+    </section>
   );
 };
 

@@ -44,7 +44,7 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center">
       <Header />
       <section>
         {authUser ? (
@@ -57,9 +57,9 @@ function App() {
             <Videogames />
           </>
         ) : (
-          <>
+          <section className="relative m-2 flex w-72 flex-col space-y-6 rounded-lg bg-white p-4 text-center ">
             <SignIn /> <SignUp />
-          </>
+          </section>
         )}
       </section>
       {/* {!authUser && authStateLoaded && (

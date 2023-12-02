@@ -13,6 +13,8 @@ import sega from '../assets/Console Icons SVG/sega.svg';
 import web from '../assets/Console Icons SVG/web.svg';
 import neogeo from '../assets/Console Icons SVG/neogeo.svg';
 import threedo from '../assets/Console Icons SVG/threedo.svg';
+import { useFetch } from './hooks/useFetch';
+import { useRef } from 'react';
 
 const platforms_available = {
   PC: pc,
@@ -33,13 +35,29 @@ const platforms_available = {
 };
 
 const VideogameItem = (props) => {
+  const clickedElement = useRef(null);
+  const { fetchedData: addedVideogames, fetchData: fetchVideogames } = useFetch(
+    'videogames',
+    'createdAt',
+  );
+
+  const statusChangeHandler = (videogameName) => {
+    console.log(videogameName);
+  };
+
   return (
     <Card>
       <img src={props.img} className="h-40 w-auto rounded-t-lg" />
       <div className="flex-1 p-4">
         <h4 className="text-xl">{props.name}</h4>
         <div className="mt-2 flex justify-between">
-          <p className="text-sm">{props.status}</p>
+          <p
+            className="text-sm"
+            ref={clickedElement}
+            onClick={() => statusChangeHandler(props.name)}
+          >
+            {props.status}
+          </p>
           <div className="flex flex-row justify-center">
             {props.platforms.map((platform) => {
               return (
